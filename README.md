@@ -2,7 +2,7 @@
 
 An MPI-based implementation for distributed processing of large 3D grid datasets using domain decomposition and ghost-cell communication. The project focuses on parallel detection of local and global extrema while exploring performance and scalability on distributed-memory systems.
 
-> Developed as part of CS633 (Parallel Computing) at IIT Kanpur.
+> Developed as part of **CS633: Parallel Computing** at IIT Kanpur.
 
 ---
 
@@ -14,23 +14,33 @@ An MPI-based implementation for distributed processing of large 3D grid datasets
 - MPI derived datatypes for efficient data transfers
 - Support for uneven domain partitioning
 - Strong scaling experiments and performance benchmarking
-- Multiple implementations (baseline, optimized, final)
+- Multiple implementations (baseline, optimized, and final)
 
 ---
 
 ## Repository Structure
 
-```
+```text
 .
-├── src.c
-├── optmised_src.c
-├── final_src.c
-├── src_test.c
 ├── Assignment.pdf
 ├── LICENSE
-├── scaling_results.csv
-├── *.png
-└── datasets/
+├── README.md
+├── baseline.c
+├── optimised.c
+├── final.c
+├── src_c.c
+├── test.c
+├── datasets/
+│   ├── data_64_64_64_3.bin
+│   ├── data_64_64_64_3.txt
+│   ├── data_64_64_96_7.bin
+│   └── data_64_64_96_7.txt
+└── results/
+    ├── scaling_results.csv
+    ├── data_64_64_64_3_scaling_boxplot.png
+    ├── data_64_64_96_7_scaling_boxplot.png
+    ├── strong_scaling_boxplot.png
+    └── strong_scaling_plot.png
 ```
 
 ---
@@ -39,33 +49,34 @@ An MPI-based implementation for distributed processing of large 3D grid datasets
 
 The implementation distributes a 3D grid across a Cartesian process grid (`PX × PY × PZ`).
 
-Each process:
+Each MPI process:
 
-- owns a local subdomain
-- exchanges ghost cells with neighboring processes
-- computes local minima and maxima
-- participates in global reductions for extrema computation
+- Owns a local subdomain of the global grid
+- Exchanges ghost cells with neighboring processes
+- Computes local minima and maxima
+- Participates in global reductions to determine overall extrema
 
-Communication uses:
+The implementation uses:
 
-- MPI Cartesian decomposition
-- Non-blocking point-to-point communication
-- MPI derived datatypes for slice exchange
+- Cartesian domain decomposition
+- Non-blocking point-to-point communication (`MPI_Isend` / `MPI_Irecv`)
+- MPI derived datatypes for efficient boundary exchange
+- Support for uneven grid partitioning across processes
 
 ---
 
 ## Building
 
-Requirements
+### Requirements
 
 - MPI (OpenMPI or MPICH)
-- GCC (C99)
+- GCC (C99 compatible)
 - Linux
 
-Compile:
+### Compile
 
 ```bash
-mpicc -O3 -o final.x final_src.c -lm
+mpicc -O3 -o final.x final.c -lm
 ```
 
 ---
@@ -81,11 +92,11 @@ mpirun -np <processes> ./final.x \
     <output>
 ```
 
-Example:
+### Example
 
 ```bash
 mpirun -np 8 ./final.x \
-data_64_64_64_3.txt \
+datasets/data_64_64_64_3.txt \
 2 2 2 \
 64 64 64 \
 3 \
@@ -106,7 +117,7 @@ The program reports:
 
 Example:
 
-```
+```text
 (125,143), (98,156), (110,132)
 (0.125,9.875), (0.250,9.750), (0.313,9.625)
 0.125,0.875,1.000
@@ -116,16 +127,16 @@ Example:
 
 ## Performance
 
-The project evaluates strong scaling across multiple MPI process counts.
+The project includes strong scaling experiments across multiple MPI process counts.
 
-Highlights:
+Key observations:
 
-- 3D decomposition improves load balancing.
-- Communication dominates for smaller datasets.
-- Larger datasets demonstrate better scalability.
-- Ghost-cell exchange implemented using MPI derived datatypes minimizes packing overhead.
+- 3D decomposition improves load balancing compared to lower-dimensional partitioning.
+- Communication overhead dominates for smaller problem sizes.
+- Larger datasets demonstrate improved scalability.
+- Ghost-cell exchange using MPI derived datatypes minimizes packing overhead.
 
-Performance plots are included in the repository.
+Performance plots and scaling results are available in the `results/` directory.
 
 ---
 
@@ -141,4 +152,4 @@ Performance plots are included in the repository.
 
 ## License
 
-Released under the MIT License.
+Released under the MIT License. See the [LICENSE](LICENSE) file for details.

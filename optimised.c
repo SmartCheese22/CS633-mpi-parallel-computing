@@ -1,8 +1,8 @@
 //===============================================================================
-// Program : osrc.c
+// Program : optimised.c
 // Purpose : Find local and global extremas in a 3D grid (optimised)
 //
-// Compile : mpicc -o sorc.x osrc.c -O3
+// Compile : mpicc -o optimised.x optimised.c -O3
 //===============================================================================
 /*===============================LIBRARY INCLUDE FILES===========================*/
 #include <stdio.h>

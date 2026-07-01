@@ -1,8 +1,8 @@
 //===============================================================================
-// Program : src.c
+// Program : final.c
 // Purpose : Find local and global extremas in a 3D grid (optimised)
 //
-// Compile : mpicc -o src.x src.c -O3
+// Compile : mpicc -o final.x final.c -O3
 //===============================================================================
 /*===============================LIBRARY INCLUDE FILES===========================*/
 #include <stdio.h>
